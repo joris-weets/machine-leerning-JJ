@@ -69,6 +69,20 @@ def visualize_dataset_tSNE(dataset, extract_features=False, feature_extractor=No
         labels = labels.squeeze().numpy()
         X = tsne.fit_transform(images.reshape(len(images),-1))
   
+    
+    # Find 5 leftmost and 5 rightmost points
+    leftmost_indices = X[:,0].argsort()[:5]  # Indices of 5 smallest x-coordinates
+    rightmost_indices = X[:,0].argsort()[-5:]  # Indices of 5 largest x-coordinates
+    
+    print("5 Furthest LEFT points:")
+    for i, idx in enumerate(leftmost_indices, 1):
+        print(f"  {i}. {dataset.images[idx]} (risk: {labels[idx]:.3f})")
+    
+    print("\n5 Furthest RIGHT points:")
+    for i, idx in enumerate(rightmost_indices, 1):
+        print(f"  {i}. {dataset.images[idx]} (risk: {labels[idx]:.3f})")
+
+
     # Define custom colormap
     colors = ["green","yellow","orange","red","black"]
     nodes = [0,0.15,0.3,0.5,1]
@@ -111,9 +125,10 @@ def visualize_dataset_tSNE(dataset, extract_features=False, feature_extractor=No
                     ab.set_visible(False) # hide annotation box
                     fig.canvas.draw_idle() # redraw figure
                     
+    
     # Connect event to figure
     fig.canvas.mpl_connect('motion_notify_event', motion_hover)
-
+    plt.title("TSNE projection of Image Features")
     plt.show()
 
 
